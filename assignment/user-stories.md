@@ -31,6 +31,6 @@ The current application requires that I put in a width and length to make a calc
 
 Currently, we return the total number of studs required for the building. Gerald need to know the different between the top/bottom boards (called "plates") and the vertical boards (called "studs"). We also need to calculate two rows of top plates. The bottom plates will still only have one row.
 
-### As Gerald, I need "beams" to be called "posts".
+### As Gerald, I need "POSTs" to be called "posts".
 
-We call the extra 4x4's "beams", and they need to be called "posts".
+We call the extra 4x4's "POSTs", and they need to be called "posts".
