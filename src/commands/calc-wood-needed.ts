@@ -25,6 +25,12 @@ export function calcWoodNeeded(yargs: Argv): void {
                 alias: "l",
                 description: "The length of the house",
             },
+
+            units: {
+                type: "string",
+                alias: "u",
+                description: "changes width and length to inches"
+            }
         },
 
         // define the function we want to run once the arguments are parsed
@@ -32,8 +38,10 @@ export function calcWoodNeeded(yargs: Argv): void {
             args: Arguments<{
                 width: number;
                 length: number;
+                units: string;
                 w: number;
                 l: number;
+                u: string;
             }>
         ) {
             
