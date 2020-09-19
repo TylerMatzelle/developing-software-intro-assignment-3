@@ -152,6 +152,6 @@ export function calculateHouseRequirements(
 
     return {
         studs: studs,
-        POSTS: POSTS,
+        posts: POSTS,
     };
 }
