@@ -139,7 +139,7 @@ export function calculateHouseRequirements(
     // convert feet to inches
     const outerWidthOfHouse = convertFeetToInches(widthInFeet);
     const outerLengthOfHouse = convertFeetToInches(lengthInFeet);
-
+    
     // calculate the space inbetween corner POSTS
     const innerWidthOfHouse = outerWidthOfHouse - POST_WIDTH * 2;
     const innerLengthOfHouse = outerLengthOfHouse - POST_WIDTH * 2;
