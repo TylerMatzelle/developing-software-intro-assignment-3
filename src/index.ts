@@ -4,6 +4,7 @@
 import yargs = require('yargs')
 import { calcWoodNeeded } from './commands/calc-wood-needed'
 import { Houses } from './house/houses'
+import { IHouse } from './house/interface'
 
 // example with anonymous function
 Houses.setWallSuppliesCalculator((inches:number) =>{
@@ -15,6 +16,16 @@ Houses.setWallSuppliesCalculator((inches:number) =>{
         plates: 96 // how long the plate is horizontally
     }
 });
+
+const savedHouses = Houses.getAll();
+const houses:IHouse[] = [...savedHouses.values()];
+
+const house = Houses.create("Tyler");
+house.width = 96;
+house.length = 56;
+Houses.save(house);
+
+console.log(house);
 
 calcWoodNeeded( yargs );
 
