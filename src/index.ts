@@ -25,8 +25,6 @@ house.width = 96;
 house.length = 56;
 Houses.save(house);
 
-console.log("Tyler");
-
 calcWoodNeeded( yargs );
 
 // tell yargs to include the --help flag

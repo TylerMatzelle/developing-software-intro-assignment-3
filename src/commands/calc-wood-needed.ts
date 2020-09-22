@@ -45,12 +45,12 @@ export function calcWoodNeeded(yargs: Argv): void {
             }>
         ) {
             
-            const requirements = calculateHouseRequirements(
-                args.width,
-                args.length
-            );
+        const requirements = calculateHouseRequirements(
+            args.width,
+            args.length
+        );
 
-            console.log( requirements );
+        console.log( requirements );
 
         }
     );
