@@ -25,7 +25,7 @@ house.width = 96;
 house.length = 56;
 Houses.save(house);
 
-console.log(house);
+console.log("Tyler");
 
 calcWoodNeeded( yargs );
 
