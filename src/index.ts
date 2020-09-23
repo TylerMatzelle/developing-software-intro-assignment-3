@@ -25,6 +25,12 @@ house.width = 96;
 house.length = 56;
 Houses.save(house);
 
+let units:boolean;
+
+if (units=true){
+    units
+}
+
 calcWoodNeeded( yargs );
 
 // tell yargs to include the --help flag
