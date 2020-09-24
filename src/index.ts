@@ -7,13 +7,13 @@ import { Houses } from './house/houses'
 import { IHouse } from './house/interface'
 
 // example with anonymous function
-Houses.setWallSuppliesCalculator((inches:number) =>{
+Houses.setWallSuppliesCalculator(() =>{
 
     // calculation of wall supplies for wall {inches} long here
     return{
-        posts: 42, // how long the post is horizontally
-        studs: 42, // how long the stud is horizontally
-        plates: 96 // how long the plate is horizontally
+        posts: 0, // how long the post is horizontally
+        studs: 0, // how long the stud is horizontally
+        plates: 0 // how long the plate is horizontally
     }
 });
 
@@ -25,11 +25,7 @@ house.width = 96;
 house.length = 56;
 Houses.save(house);
 
-let units:boolean;
-
-if (units=true){
-    units
-}
+// console.log(houses, house);
 
 calcWoodNeeded( yargs );
 
