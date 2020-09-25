@@ -38,6 +38,12 @@ function getBoardsInLength(inches: number): number {
     return plates + studs;
 }
 
+function separatePlatesFromStuds(inches:number):number{
+    const studs = getStudsInLength(inches);
+    const plates = getBoardsInLength(inches) - studs;
+    return plates;
+}
+
 function getRequiredPOSTSInLength(inches: number) {
     // for every 20 feet, we need one POST
     // we know our wall is at least 20 feet, so calculate the required POSTS for the REST of the wall
@@ -134,7 +140,8 @@ function accountForWaste(items: number): number {
 
 export function calculateHouseRequirements(
     widthInFeet: number,
-    lengthInFeet: number
+    lengthInFeet: number,
+    inches:number
 ) {
     // convert feet to inches
     const outerWidthOfHouse = convertFeetToInches(widthInFeet);
@@ -146,12 +153,15 @@ export function calculateHouseRequirements(
 
     const wall1 = buildWall(innerWidthOfHouse);
     const wall2 = buildWall(innerLengthOfHouse);
+    const topAndBottom = separatePlatesFromStuds(inches);
 
     const studs = accountForWaste((wall1.studs + wall2.studs) * 2);
     const POSTS = accountForWaste((wall1.POSTS + wall2.POSTS) * 2 + 4);
-
+    const plates = accountForWaste(topAndBottom);
+    
     return {
         studs: studs,
         posts: POSTS,
+        plates: plates
     };
 }
