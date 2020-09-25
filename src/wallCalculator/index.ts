@@ -1,12 +1,12 @@
-const BEAM_WIDTH = 3.5;
+const POST_WIDTH = 3.5;
 const BOARD_LENGTH = 8 * 12;
 const WASTE_MULTIPLIER = 0.1;
 const STUDS_OFFSET = 16;
 
-// beams are required every 20 feet at minimum
-const BEAMS_REQUIRED_EVERY_INCHES = 20 * 12;
+// POSTS are required every 20 feet at minimum
+const POSTS_REQUIRED_EVERY_INCHES = 20 * 12;
 const FULL_BOARDS_IN_SECTION = Math.floor(
-    BEAMS_REQUIRED_EVERY_INCHES / BOARD_LENGTH
+    POSTS_REQUIRED_EVERY_INCHES / BOARD_LENGTH
 );
 const FULL_BOARD_SECTION_SIZE = FULL_BOARDS_IN_SECTION * BOARD_LENGTH;
 
@@ -38,83 +38,89 @@ function getBoardsInLength(inches: number): number {
     return plates + studs;
 }
 
-function getRequiredBeamsInLength(inches: number) {
-    // for every 20 feet, we need one beam
-    // we know our wall is at least 20 feet, so calculate the required beams for the REST of the wall
+function separatePlatesFromStuds(inches:number):number{
+    const studs = getStudsInLength(inches);
+    const plates = getBoardsInLength(inches) - studs;
+    return plates;
+}
+
+function getRequiredPOSTSInLength(inches: number) {
+    // for every 20 feet, we need one POST
+    // we know our wall is at least 20 feet, so calculate the required POSTS for the REST of the wall
     // if our wall is under 20 feet, this will return zero
-    const wallLengthOverMinRequired = getWallLengthOverMinimumRequiredBeforeBeam(
+    const wallLengthOverMinRequired = getWallLengthOverMinimumRequiredBeforePOST(
         inches
     );
-    const wallLengthPlusBeam = BEAMS_REQUIRED_EVERY_INCHES + BEAM_WIDTH;
-    const requiredBeams = Math.ceil(
-        wallLengthOverMinRequired / wallLengthPlusBeam
+    const wallLengthPlusPOST = POSTS_REQUIRED_EVERY_INCHES + POST_WIDTH;
+    const requiredPOSTS = Math.ceil(
+        wallLengthOverMinRequired / wallLengthPlusPOST
     );
 
-    return requiredBeams;
+    return requiredPOSTS;
 }
 
-function getWallLengthOverMinimumRequiredBeforeBeam(inches: number): number {
-    return Math.max(inches - BEAMS_REQUIRED_EVERY_INCHES, 0);
+function getWallLengthOverMinimumRequiredBeforePOST(inches: number): number {
+    return Math.max(inches - POSTS_REQUIRED_EVERY_INCHES, 0);
 }
 
-// any number of inches past BEAMS_REQUIRED_EVERY_INCHES will return 1
-// any number of inches below or equal to BEAMS_REQUIRED_EVERY_INCHES return 0
-function isBeamRequired(inches: number): number {
+// any number of inches past POSTS_REQUIRED_EVERY_INCHES will return 1
+// any number of inches below or equal to POSTS_REQUIRED_EVERY_INCHES return 0
+function isPOSTRequired(inches: number): number {
     // negative numbers are zero
     const wallLengthOverMinRequired = Math.max(
-        inches - BEAMS_REQUIRED_EVERY_INCHES,
+        inches - POSTS_REQUIRED_EVERY_INCHES,
         0
     );
 
     // remove decimals
     const wholeNumber = Math.ceil(wallLengthOverMinRequired);
 
-    // returns 1 (at least one beam required ) or 0 (no beams required)
-    const isBeamRequired = Math.min(wholeNumber, 1);
+    // returns 1 (at least one POST required ) or 0 (no POSTS required)
+    const isPOSTRequired = Math.min(wholeNumber, 1);
 
-    return isBeamRequired;
+    return isPOSTRequired;
 }
 
-function getFullSections(inches: number, beams: number) {
-    // how many inches will we remove from a section between beams to get to the last full board
+function getFullSections(inches: number, POSTS: number) {
+    // how many inches will we remove from a section between POSTS to get to the last full board
     const inchesReducedPerSection =
-        BEAMS_REQUIRED_EVERY_INCHES - FULL_BOARD_SECTION_SIZE;
+        POSTS_REQUIRED_EVERY_INCHES - FULL_BOARD_SECTION_SIZE;
 
-    // how big is the last section if all beams are at BEAMS_REQUIRED_EVERY_INCHES
+    // how big is the last section if all POSTS are at POSTS_REQUIRED_EVERY_INCHES
     const lastSectionSize =
-        inches - beams * (BEAMS_REQUIRED_EVERY_INCHES + BEAM_WIDTH);
+        inches - POSTS * (POSTS_REQUIRED_EVERY_INCHES + POST_WIDTH);
 
-    // how many inches of boards can we add to the last section before it will add an additional beam to the structure
-    const remainingBeforeNewBeam =
-        BEAMS_REQUIRED_EVERY_INCHES - lastSectionSize;
+    // how many inches of boards can we add to the last section before it will add an additional POST to the structure
+    const remainingBeforeNewPOST =
+        POSTS_REQUIRED_EVERY_INCHES - lastSectionSize;
 
     // how many complete portions of the inchesReducedPerSection can we move to the last section
     let fullSections = Math.floor(
-        remainingBeforeNewBeam / inchesReducedPerSection
+        remainingBeforeNewPOST / inchesReducedPerSection
     );
 
     // even if we can FIT fullSections moved into the last portion, we might not HAVE them in our length
-    fullSections = Math.min(fullSections, beams);
+    fullSections = Math.min(fullSections, POSTS);
 
-    // safeguard inches not requiring a beam and return value
-    fullSections = fullSections * isBeamRequired(inches);
+    // safeguard inches not requiring a POST and return value
+    fullSections = fullSections * isPOSTRequired(inches);
 
     return fullSections;
 }
 
-function getLastSectionSize(inches: number, beams: number) {
-    const fullSections = getFullSections(inches, beams);
+function getLastSectionSize(inches: number, POSTS: number) {
+    const fullSections = getFullSections(inches, POSTS);
     const lastSectionSize =
-        inches - beams * BEAM_WIDTH - fullSections * FULL_BOARD_SECTION_SIZE;
+        inches - POSTS * POST_WIDTH - fullSections * FULL_BOARD_SECTION_SIZE;
 
     return lastSectionSize;
 }
 
 function buildWall(inches: number) {
-    // get required beams
-    const requiredBeams = getRequiredBeamsInLength(inches);
-    const fullSections = getFullSections(inches, requiredBeams);
-    const lastSectionSize = getLastSectionSize(inches, requiredBeams);
+    // get required POSTS
+    const requiredPOSTS = getRequiredPOSTSInLength(inches);
+    const fullSections = getFullSections(inches, requiredPOSTS);
+    const lastSectionSize = getLastSectionSize(inches, requiredPOSTS);
     const studs =
         getBoardsInLength(FULL_BOARD_SECTION_SIZE) * fullSections +
         getBoardsInLength(lastSectionSize);
@@ -123,7 +129,7 @@ function buildWall(inches: number) {
         function: "buildWall",
         inches,
         studs: studs,
-        beams: requiredBeams,
+        POSTS: requiredPOSTS,
     };
 }
 
@@ -134,24 +140,28 @@ function accountForWaste(items: number): number {
 
 export function calculateHouseRequirements(
     widthInFeet: number,
-    lengthInFeet: number
+    lengthInFeet: number,
+    inches:number
 ) {
     // convert feet to inches
     const outerWidthOfHouse = convertFeetToInches(widthInFeet);
     const outerLengthOfHouse = convertFeetToInches(lengthInFeet);
-
-    // calculate the space inbetween corner beams
-    const innerWidthOfHouse = outerWidthOfHouse - BEAM_WIDTH * 2;
-    const innerLengthOfHouse = outerLengthOfHouse - BEAM_WIDTH * 2;
+    
+    // calculate the space inbetween corner POSTS
+    const innerWidthOfHouse = outerWidthOfHouse - POST_WIDTH * 2;
+    const innerLengthOfHouse = outerLengthOfHouse - POST_WIDTH * 2;
 
     const wall1 = buildWall(innerWidthOfHouse);
     const wall2 = buildWall(innerLengthOfHouse);
+    const topAndBottom = separatePlatesFromStuds(inches);
 
     const studs = accountForWaste((wall1.studs + wall2.studs) * 2);
-    const beams = accountForWaste((wall1.beams + wall2.beams) * 2 + 4);
-
+    const POSTS = accountForWaste((wall1.POSTS + wall2.POSTS) * 2 + 4);
+    const plates = accountForWaste(topAndBottom);
+    
     return {
         studs: studs,
-        beams: beams,
+        posts: POSTS,
+        plates: plates
     };
 }
